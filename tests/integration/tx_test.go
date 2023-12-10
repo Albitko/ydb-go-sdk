@@ -54,7 +54,7 @@ func TestNoEffectsIfForgetCommitTx(t *testing.T) {
 		require.NoError(t, err)
 
 		// check for NO persist data from tx1
-		_, result, err := s.Execute(ctx, table.DefaultTxControl(), `
+		_, result, err := s.Execute(ctx, `
 			DECLARE $p1 AS Uint64;
 			SELECT val FROM `+"`"+tablePath+"`"+`
 			WHERE id = $p1;`,
@@ -103,7 +103,7 @@ func TestNoEffectsIfForgetCommitTx(t *testing.T) {
 		require.NoError(t, err)
 
 		// check for persist data from tx2
-		_, result, err = s.Execute(ctx, table.DefaultTxControl(), `
+		_, result, err = s.Execute(ctx, `
 			DECLARE $p1 AS Uint64;
 			SELECT val FROM `+"`"+tablePath+"`"+`
 			WHERE id = $p1;`,

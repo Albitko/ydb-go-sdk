@@ -219,15 +219,10 @@ func (s *service) insertShort(ctx context.Context, url string) (h string, err er
 			TablePathPrefix: path.Join(s.db.Name(), prefix),
 		},
 	)
-	writeTx := table.TxControl(
-		table.BeginTx(
-			table.WithSerializableReadWrite(),
-		),
-		table.CommitTx(),
-	)
+
 	err = s.db.Table().Do(ctx,
 		func(ctx context.Context, s table.Session) (err error) {
-			_, _, err = s.Execute(ctx, writeTx, query,
+			_, _, err = s.Execute(ctx, query,
 				table.NewQueryParameters(
 					table.ValueParam("$hash", types.TextValue(h)),
 					table.ValueParam("$src", types.TextValue(url)),
@@ -267,7 +262,7 @@ func (s *service) selectLong(ctx context.Context, hash string) (url string, err 
 	var res result.Result
 	err = s.db.Table().Do(ctx,
 		func(ctx context.Context, s table.Session) (err error) {
-			_, res, err = s.Execute(ctx, readTx, query,
+			_, res, err = s.Execute(table.WithTxControl(ctx, readTx), query,
 				table.NewQueryParameters(
 					table.ValueParam("$hash", types.TextValue(hash)),
 				),

@@ -211,7 +211,6 @@ func (c *conn) execContext(ctx context.Context, query string, args []driver.Name
 			return nil, xerrors.WithStackTrace(err)
 		}
 		_, res, err := c.session.Execute(ctx,
-			txControl(ctx, c.defaultTxControl),
 			normalizedQuery, params, c.dataQueryOptions(ctx)...,
 		)
 		if err != nil {
@@ -319,7 +318,6 @@ func (c *conn) queryContext(ctx context.Context, query string, args []driver.Nam
 			return nil, xerrors.WithStackTrace(err)
 		}
 		_, res, err := c.session.Execute(ctx,
-			txControl(ctx, c.defaultTxControl),
 			normalizedQuery, params, c.dataQueryOptions(ctx)...,
 		)
 		if err != nil {

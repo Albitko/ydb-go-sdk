@@ -44,7 +44,7 @@ func TestDataQueryIssueRowCol(t *testing.T) {
 	})
 	require.NoError(t, err)
 	err = db.Table().Do(ctx, func(ctx context.Context, s table.Session) (err error) {
-		_, _, err = s.Execute(ctx, table.DefaultTxControl(), `
+		_, _, err = s.Execute(ctx, `
 				UPSERT INTO "users" (id) VALUES (1);
 			`, nil,
 		)

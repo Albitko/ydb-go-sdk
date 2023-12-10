@@ -33,7 +33,7 @@ func Example_select() {
 	err = db.Table().Do( // Do retry operation on errors with best effort
 		ctx, // context manage exiting from Do
 		func(ctx context.Context, s table.Session) (err error) { // retry operation
-			_, res, err := s.Execute(ctx, table.DefaultTxControl(), query, nil)
+			_, res, err := s.Execute(ctx, query, nil)
 			if err != nil {
 				return err // for auto-retry with driver
 			}
@@ -191,7 +191,6 @@ func Example_lazyTransaction() {
 		func(ctx context.Context, session table.Session) (err error) {
 			// execute query with opening lazy transaction
 			tx, result, err := session.Execute(ctx,
-				table.SerializableReadWriteTxControl(),
 				"DECLARE $id AS Uint64; "+
 					"SELECT `title`, `description` FROM `path/to/mytable` WHERE id = $id",
 				table.NewQueryParameters(
@@ -317,7 +316,7 @@ func Example_dataQueryWithCompression() {
 	err = db.Table().Do( // Do retry operation on errors with best effort
 		ctx, // context manage exiting from Do
 		func(ctx context.Context, s table.Session) (err error) { // retry operation
-			_, res, err := s.Execute(ctx, table.DefaultTxControl(), query, nil,
+			_, res, err := s.Execute(ctx, query, nil,
 				options.WithCallOptions(
 					grpc.UseCompressor(gzip.Name),
 				),

@@ -99,12 +99,7 @@ func TestSplitRangesAndRead(t *testing.T) {
 					func(ctx context.Context, s table.Session) (err error) {
 						_, _, err = s.Execute(
 							ctx,
-							table.TxControl(
-								table.BeginTx(
-									table.WithSerializableReadWrite(),
-								),
-								table.CommitTx(),
-							), `
+							`
 								DECLARE $values AS List<Struct<
 									id: Uint64,
 								>>;

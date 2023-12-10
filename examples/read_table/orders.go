@@ -88,12 +88,6 @@ func fillTable(ctx context.Context, c table.Client, prefix string) (err error) {
 		func(ctx context.Context, s table.Session) (err error) {
 			_, _, err = s.Execute(
 				ctx,
-				table.TxControl(
-					table.BeginTx(
-						table.WithSerializableReadWrite(),
-					),
-					table.CommitTx(),
-				),
 				render(fillQuery, templateConfig{
 					TablePathPrefix: prefix,
 				}),

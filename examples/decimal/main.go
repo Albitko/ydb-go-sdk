@@ -95,7 +95,7 @@ func main() {
 			x := big.NewInt(42 * 1000000000)
 			x.Mul(x, big.NewInt(2))
 
-			_, _, err = s.Execute(ctx, txc, render(writeQuery, templateConfig{
+			_, _, err = s.Execute(ctx, render(writeQuery, templateConfig{
 				TablePathPrefix: prefix,
 			}), table.NewQueryParameters(
 				table.ValueParam("$decimals",
@@ -111,7 +111,7 @@ func main() {
 				return err
 			}
 
-			_, res, err := s.Execute(ctx, txc, render(readQuery, templateConfig{
+			_, res, err := s.Execute(ctx, render(readQuery, templateConfig{
 				TablePathPrefix: prefix,
 			}), nil)
 			if err != nil {

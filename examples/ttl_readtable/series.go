@@ -50,11 +50,9 @@ func deleteExpiredDocuments(ctx context.Context, c table.Client, prefix string, 
 		return k
 	}()...)
 
-	writeTx := table.TxControl(table.BeginTx(table.WithSerializableReadWrite()), table.CommitTx())
-
 	err := c.Do(ctx,
 		func(ctx context.Context, s table.Session) (err error) {
-			_, _, err = s.Execute(ctx, writeTx, query,
+			_, _, err = s.Execute(ctx, query,
 				table.NewQueryParameters(
 					table.ValueParam("$keys", keys),
 					table.ValueParam("$timestamp", types.Uint64Value(timestamp)),
@@ -174,7 +172,7 @@ func readDocument(ctx context.Context, c table.Client, prefix, url string) error
 	var res result.Result
 	err := c.Do(ctx,
 		func(ctx context.Context, s table.Session) (err error) {
-			_, res, err = s.Execute(ctx, readTx, query, table.NewQueryParameters(
+			_, res, err = s.Execute(table.WithTxControl(ctx, readTx), query, table.NewQueryParameters(
 				table.ValueParam("$url", types.TextValue(url))),
 			)
 			return err
@@ -230,11 +228,9 @@ func addDocument(ctx context.Context, c table.Client, prefix, url, html string, 
         VALUES
             ($doc_id, $url, $html, $timestamp);`, prefix)
 
-	writeTx := table.TxControl(table.BeginTx(table.WithSerializableReadWrite()), table.CommitTx())
-
 	err := c.Do(ctx,
 		func(ctx context.Context, s table.Session) (err error) {
-			_, _, err = s.Execute(ctx, writeTx, query, table.NewQueryParameters(
+			_, _, err = s.Execute(ctx, query, table.NewQueryParameters(
 				table.ValueParam("$url", types.TextValue(url)),
 				table.ValueParam("$html", types.TextValue(html)),
 				table.ValueParam("$timestamp", types.Uint64Value(timestamp))),

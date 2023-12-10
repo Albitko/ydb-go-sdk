@@ -113,12 +113,7 @@ func TestLongStream(t *testing.T) {
 						func(ctx context.Context, s table.Session) (err error) {
 							_, _, err = s.Execute(
 								ctx,
-								table.TxControl(
-									table.BeginTx(
-										table.WithSerializableReadWrite(),
-									),
-									table.CommitTx(),
-								), `
+								`
 								DECLARE $values AS List<Struct<
 									val: Int32,
 								>>;
@@ -151,7 +146,7 @@ func TestLongStream(t *testing.T) {
 							t.Fatalf("wrong rows count: %v, expected: %d", upserted, upsertRowsCount)
 						}
 						err := db.Table().Do(ctx, func(ctx context.Context, s table.Session) error {
-							_, res, err := s.Execute(ctx, table.DefaultTxControl(),
+							_, res, err := s.Execute(ctx,
 								"SELECT CAST(COUNT(*) AS Uint64) FROM `"+path.Join(db.Name(), folder, tableName)+"`;",
 								nil,
 							)
@@ -178,7 +173,7 @@ func TestLongStream(t *testing.T) {
 						}, table.WithIdempotent())
 						require.NoError(t, err)
 						err = db.Table().Do(ctx, func(ctx context.Context, s table.Session) error {
-							_, res, err := s.Execute(ctx, table.DefaultTxControl(),
+							_, res, err := s.Execute(ctx,
 								"SELECT CAST(SUM(val) AS Uint64) FROM `"+path.Join(db.Name(), folder, tableName)+"`;",
 								nil,
 							)

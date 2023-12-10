@@ -30,7 +30,7 @@ func Example_consumedUnitsCount() {
 			totalConsumedUnits += meta.ConsumedUnits(md)
 		}),
 		func(ctx context.Context, s table.Session) (err error) { // retry operation
-			_, res, err := s.Execute(ctx, table.DefaultTxControl(), query, nil)
+			_, res, err := s.Execute(ctx, query, nil)
 			if err != nil {
 				return err // for auto-retry with driver
 			}

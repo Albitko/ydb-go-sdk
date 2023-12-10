@@ -13,7 +13,7 @@ import (
 // Use NextResultSet(), NextRow() and Scan() to advance through the result sets,
 // its rows and row's items.
 //
-//	res, err := s.Execute(ctx, txc, "SELECT ...")
+//	res, err := s.Execute(ctx, "SELECT ...")
 //	defer res.Close()
 //	for res.NextResultSet(ctx) {
 //	    for res.NextRow() {

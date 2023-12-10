@@ -164,7 +164,6 @@ func (s *service) upsertRows(ctx context.Context, rows []row) (err error) {
 	err = s.db.Table().Do(ctx,
 		func(ctx context.Context, session table.Session) (err error) {
 			_, _, err = session.Execute(ctx,
-				table.SerializableReadWriteTxControl(table.CommitTx()),
 				fmt.Sprintf(`
 					PRAGMA TablePathPrefix("%s");
 			

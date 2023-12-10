@@ -109,7 +109,7 @@ func TestTableCrossJoin(t *testing.T) {
 
 			var got uint64
 			err = db.Table().Do(ctx, func(c context.Context, s table.Session) (err error) {
-				_, res, err := s.Execute(c, table.DefaultTxControl(), query, params)
+				_, res, err := s.Execute(c, query, params)
 				if err != nil {
 					return err
 				}

@@ -50,7 +50,6 @@ func TestIssue798TruncatedError(t *testing.T) {
 	{
 		err := driver.Table().Do(ctx, func(ctx context.Context, s table.Session) error {
 			_, results, err := s.Execute(ctx,
-				table.DefaultTxControl(),
 				fmt.Sprintf("SELECT * FROM `%s`;", tablePath),
 				nil,
 			)
@@ -102,7 +101,6 @@ func TestIssue798TruncatedError(t *testing.T) {
 	{
 		err := driver.Table().Do(ctx, func(ctx context.Context, s table.Session) error {
 			_, results, err := s.Execute(ctx,
-				table.DefaultTxControl(),
 				fmt.Sprintf("SELECT * FROM `%s`;", tablePath),
 				nil,
 			)
@@ -140,7 +138,6 @@ func TestIssue798TruncatedError(t *testing.T) {
 	{
 		err := driver.Table().Do(ctx, func(ctx context.Context, s table.Session) error {
 			_, results, err := s.Execute(ctx,
-				table.DefaultTxControl(),
 				fmt.Sprintf("SELECT * FROM `%s`;", tablePath),
 				nil,
 				options.WithIgnoreTruncated(),
@@ -166,7 +163,6 @@ func TestIssue798TruncatedError(t *testing.T) {
 
 		err = driver.Table().Do(ctx, func(ctx context.Context, s table.Session) error {
 			_, results, err := s.Execute(ctx,
-				table.DefaultTxControl(),
 				fmt.Sprintf("SELECT * FROM `%s`;", tablePath),
 				nil,
 			)

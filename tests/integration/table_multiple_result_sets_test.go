@@ -95,12 +95,7 @@ func TestTableMultipleResultSets(t *testing.T) {
 			err := db.Table().Do(ctx,
 				func(ctx context.Context, s table.Session) (err error) {
 					_, _, err = s.Execute(ctx,
-						table.TxControl(
-							table.BeginTx(
-								table.WithSerializableReadWrite(),
-							),
-							table.CommitTx(),
-						), `
+						`
 							PRAGMA TablePathPrefix("`+path.Join(db.Name(), scope.folder)+`");
 							DECLARE $values AS List<Struct<
 								val: Int32,
