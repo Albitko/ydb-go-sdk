@@ -29,6 +29,8 @@ type Operation func(ctx context.Context, s Session) error
 // if TxOperation returns nil - retry loop will break
 type TxOperation func(ctx context.Context, tx TransactionActor) error
 
+type ctxTransactionControlKey struct{}
+
 type ClosableSession interface {
 	closer.Closer
 
@@ -142,7 +144,6 @@ type Session interface {
 	// append option options.WithKeepInCache(false)
 	Execute(
 		ctx context.Context,
-		tx *TransactionControl,
 		query string,
 		params *QueryParameters,
 		opts ...options.ExecuteDataQueryOption,
@@ -329,6 +330,19 @@ func WithTxID(txID string) TxControlOption {
 			TxId: txID,
 		}
 	}
+}
+
+func WithTxControl(ctx context.Context, txc *TransactionControl) context.Context {
+	return context.WithValue(ctx, ctxTransactionControlKey{}, txc)
+}
+
+func ContextOrDefaultTxControl(
+	ctx context.Context, defaultTxControl *TransactionControl,
+) (txControl *TransactionControl) {
+	if txc, ok := ctx.Value(ctxTransactionControlKey{}).(*TransactionControl); ok {
+		return txc
+	}
+	return defaultTxControl
 }
 
 // CommitTx returns commit transaction control option
