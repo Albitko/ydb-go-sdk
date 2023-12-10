@@ -38,7 +38,7 @@ const query = `SELECT 42 as id, "myStr" as myStr;`
 
 // Do retry operation on errors with best effort
 queryErr := db.Table().Do(ctx, func(ctx context.Context, s table.Session) (err error) {
-    _, res, err := s.Execute(ctx, table.DefaultTxControl(), query, nil)
+    _, res, err := s.Execute(ctx, query, nil)
     if err != nil {
         return err
     }

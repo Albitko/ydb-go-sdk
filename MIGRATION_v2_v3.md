@@ -116,7 +116,7 @@
   err := table.Retry(ctx, sp,
     table.OperationFunc(
         func(ctx context.Context, s *table.Session) (err error) {
-            _, res, err = s.Execute(ctx, readTx, "SELECT 1+1")
+            _, res, err = s.Execute(ctx, "SELECT 1+1")
             return err
         },
     )
@@ -134,7 +134,7 @@
   var res result.Result
   err := db.Table().Do(ctx,
     func(ctx context.Context, s table.Session) (err error) {
-        _, res, err = s.Execute(ctx, readTx, "SELECT 1+1")
+        _, res, err = s.Execute(ctx, "SELECT 1+1")
         return err
     },
     table.WithIdempotent(), // only idempotent queries
@@ -154,7 +154,7 @@ In this case query must be changed for supporting pagination. Truncated flag in 
   err := table.Retry(ctx, sp,
     table.OperationFunc(
         func(ctx context.Context, s *table.Session) (err error) {
-            _, res, err = s.Execute(ctx, readTx, "SELECT 1+1")
+            _, res, err = s.Execute(ctx, "SELECT 1+1")
             if err != nil {
               // error fallback
             }
@@ -187,7 +187,7 @@ In this case query must be changed for supporting pagination. Truncated flag in 
   var res result.Result
   err := db.Table().Do(ctx,
     func(ctx context.Context, s table.Session) (err error) {
-        _, res, err = s.Execute(ctx, readTx, "SELECT 1+1")
+        _, res, err = s.Execute(ctx, "SELECT 1+1")
         if err != nil {
             // error fallback
         }
