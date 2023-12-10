@@ -697,7 +697,6 @@ func (s *session) Prepare(ctx context.Context, queryText string) (_ table.Statem
 // Execute executes given data query represented by text.
 func (s *session) Execute(
 	ctx context.Context,
-	txControl *table.TransactionControl,
 	query string,
 	params *table.QueryParameters,
 	opts ...options.ExecuteDataQueryOption,
@@ -716,7 +715,7 @@ func (s *session) Execute(
 	defer a.Free()
 
 	request.SessionId = s.id
-	request.TxControl = txControl.Desc()
+	request.TxControl = table.ContextOrDefaultTxControl(ctx, table.DefaultTxControl()).Desc()
 	request.Parameters = params.Params().ToYDB(a)
 	request.Query = q.toYDB(a)
 	request.QueryCachePolicy = a.TableQueryCachePolicy()
