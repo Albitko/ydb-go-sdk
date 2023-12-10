@@ -57,7 +57,7 @@ func readExpiredBatchTransaction(ctx context.Context, c table.Client, prefix str
 	var res result.Result
 	err := c.Do(ctx,
 		func(ctx context.Context, s table.Session) (err error) {
-			_, res, err = s.Execute(ctx, readTx, query, table.NewQueryParameters(
+			_, res, err = s.Execute(table.WithTxControl(ctx, readTx), query, table.NewQueryParameters(
 				table.ValueParam("$timestamp", types.Uint64Value(timestamp)),
 				table.ValueParam("$prev_timestamp", types.Uint64Value(prevTimestamp)),
 				table.ValueParam("$prev_doc_id", types.Uint64Value(prevDocID)),
@@ -89,11 +89,9 @@ func deleteDocumentWithTimestamp(ctx context.Context,
         DELETE FROM expiration_queue_%v
         WHERE ts = $timestamp AND doc_id = $doc_id;`, prefix, queue)
 
-	writeTx := table.TxControl(table.BeginTx(table.WithSerializableReadWrite()), table.CommitTx())
-
 	err := c.Do(ctx,
 		func(ctx context.Context, s table.Session) (err error) {
-			_, _, err = s.Execute(ctx, writeTx, query, table.NewQueryParameters(
+			_, _, err = s.Execute(ctx, query, table.NewQueryParameters(
 				table.ValueParam("$doc_id", types.Uint64Value(lastDocID)),
 				table.ValueParam("$timestamp", types.Uint64Value(timestamp)),
 			))
@@ -164,7 +162,7 @@ func readDocument(ctx context.Context, c table.Client, prefix, url string) error
 
 	err := c.Do(ctx,
 		func(ctx context.Context, s table.Session) (err error) {
-			_, res, err := s.Execute(ctx, readTx, query, table.NewQueryParameters(
+			_, res, err := s.Execute(table.WithTxControl(ctx, readTx), query, table.NewQueryParameters(
 				table.ValueParam("$url", types.TextValue(url)),
 			))
 			if err != nil {
@@ -225,11 +223,9 @@ func addDocument(ctx context.Context, c table.Client, prefix, url, html string, 
         VALUES
             ($timestamp, $doc_id);`, prefix, queue)
 
-	writeTx := table.TxControl(table.BeginTx(table.WithSerializableReadWrite()), table.CommitTx())
-
 	err := c.Do(ctx,
 		func(ctx context.Context, s table.Session) (err error) {
-			_, _, err = s.Execute(ctx, writeTx, query, table.NewQueryParameters(
+			_, _, err = s.Execute(ctx, query, table.NewQueryParameters(
 				table.ValueParam("$url", types.TextValue(url)),
 				table.ValueParam("$html", types.TextValue(html)),
 				table.ValueParam("$timestamp", types.Uint64Value(timestamp)),

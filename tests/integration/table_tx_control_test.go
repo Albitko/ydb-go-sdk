@@ -15,12 +15,8 @@ func TestTableTxControl(t *testing.T) {
 	driver := scope.Driver()
 
 	t.Run("rw-auto-commit", func(t *testing.T) {
-		txControl := table.TxControl(
-			table.BeginTx(table.WithSerializableReadWrite()),
-			table.CommitTx(),
-		)
 		err := driver.Table().Do(scope.Ctx, func(ctx context.Context, s table.Session) error {
-			_, _, err := s.Execute(ctx, txControl, "SELECT 1", nil)
+			_, _, err := s.Execute(ctx, "SELECT 1", nil)
 			return err
 		})
 		scope.Require.NoError(err)
@@ -31,7 +27,7 @@ func TestTableTxControl(t *testing.T) {
 			table.CommitTx(),
 		)
 		err := driver.Table().Do(scope.Ctx, func(ctx context.Context, s table.Session) error {
-			_, _, err := s.Execute(ctx, txControl, "SELECT 1", nil)
+			_, _, err := s.Execute(table.WithTxControl(ctx, txControl), "SELECT 1", nil)
 			return err
 		})
 		scope.Require.NoError(err)
@@ -42,7 +38,7 @@ func TestTableTxControl(t *testing.T) {
 			table.CommitTx(),
 		)
 		err := driver.Table().Do(scope.Ctx, func(ctx context.Context, s table.Session) error {
-			_, _, err := s.Execute(ctx, txControl, "SELECT 1", nil)
+			_, _, err := s.Execute(table.WithTxControl(ctx, txControl), "SELECT 1", nil)
 			return err
 		})
 		scope.Require.NoError(err)
@@ -53,7 +49,7 @@ func TestTableTxControl(t *testing.T) {
 			table.CommitTx(),
 		)
 		err := driver.Table().Do(scope.Ctx, func(ctx context.Context, s table.Session) error {
-			_, _, err := s.Execute(ctx, txControl, "SELECT 1", nil)
+			_, _, err := s.Execute(table.WithTxControl(ctx, txControl), "SELECT 1", nil)
 			return err
 		})
 		scope.Require.NoError(err)

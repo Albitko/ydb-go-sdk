@@ -221,7 +221,7 @@ func selectSimple(ctx context.Context, c table.Client, prefix string) (err error
 	var res result.Result
 	err = c.Do(ctx,
 		func(ctx context.Context, s table.Session) (err error) {
-			_, res, err = s.Execute(ctx, readTx, query,
+			_, res, err = s.Execute(table.WithTxControl(ctx, readTx), query,
 				table.NewQueryParameters(
 					table.ValueParam("$seriesID", types.Uint64Value(1)),
 				),
@@ -331,7 +331,7 @@ func fillTablesWithData(ctx context.Context, c table.Client, prefix string) (err
 	)
 	err = c.Do(ctx,
 		func(ctx context.Context, s table.Session) (err error) {
-			_, _, err = s.Execute(ctx, writeTx, render(fill, templateConfig{
+			_, _, err = s.Execute(table.WithTxControl(ctx, writeTx), render(fill, templateConfig{
 				TablePathPrefix: prefix,
 			}), table.NewQueryParameters(
 				table.ValueParam("$seriesData", getSeriesData()),

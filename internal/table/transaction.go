@@ -75,7 +75,7 @@ func (tx *transaction) Execute(
 	case txStateRollbacked:
 		return nil, xerrors.WithStackTrace(errTxRollbackedEarly)
 	default:
-		_, r, err = tx.s.Execute(ctx, tx.control, query, params, opts...)
+		_, r, err = tx.s.Execute(table.WithTxControl(ctx, tx.control), query, params, opts...)
 		if err != nil {
 			return nil, xerrors.WithStackTrace(err)
 		}

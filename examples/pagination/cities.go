@@ -54,7 +54,7 @@ func selectPaging(
 
 	err = c.Do(ctx,
 		func(ctx context.Context, s table.Session) (err error) {
-			_, res, err := s.Execute(ctx, readTx, query,
+			_, res, err := s.Execute(table.WithTxControl(ctx, readTx), query,
 				table.NewQueryParameters(
 					table.ValueParam("$limit", types.Uint64Value(uint64(limit))),
 					table.ValueParam("$lastCity", types.TextValue(*lastCity)),
@@ -108,11 +108,9 @@ func fillTableWithData(ctx context.Context, c table.Client, prefix string) (err 
 			address
 		FROM AS_TABLE($schoolsData);`, prefix)
 
-	writeTx := table.TxControl(table.BeginTx(table.WithSerializableReadWrite()), table.CommitTx())
-
 	err = c.Do(ctx,
 		func(ctx context.Context, s table.Session) (err error) {
-			_, _, err = s.Execute(ctx, writeTx, query, table.NewQueryParameters(
+			_, _, err = s.Execute(ctx, query, table.NewQueryParameters(
 				table.ValueParam("$schoolsData", getSchoolData()),
 			))
 			return err

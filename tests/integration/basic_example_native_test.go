@@ -643,12 +643,7 @@ func TestBasicExampleNative(t *testing.T) { //nolint:gocyclo
 					)
 					// select current value of `views`
 					_, res, err = s.Execute(ctx,
-						table.TxControl(
-							table.BeginTx(
-								table.WithOnlineReadOnly(),
-							),
-							table.CommitTx(),
-						), `
+						`
 						PRAGMA TablePathPrefix("`+path.Join(db.Name(), folder)+`");
 
 						DECLARE $seriesID AS Uint64;
@@ -742,7 +737,7 @@ func TestBasicExampleNative(t *testing.T) { //nolint:gocyclo
 					title *string
 					date  *time.Time
 				)
-				_, res, err = s.Execute(ctx, readTx, query,
+				_, res, err = s.Execute(table.WithTxControl(ctx, readTx), query,
 					table.NewQueryParameters(
 						table.ValueParam("$seriesID", types.Uint64Value(1)),
 					),

@@ -242,7 +242,7 @@ func TestSessionOperationModeOnExecuteDataQuery(t *testing.T) {
 					tableService: Ydb_Table_V1.NewTableServiceClient(c.cc),
 					config:       config.New(),
 				}
-				_, _, err := s.Execute(ctx, table.TxControl(), "", table.NewQueryParameters())
+				_, _, err := s.Execute(table.WithTxControl(ctx, table.TxControl()), "", table.NewQueryParameters())
 				require.NoError(t, err)
 			},
 		},

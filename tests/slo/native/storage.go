@@ -49,10 +49,6 @@ var (
 		),
 		table.CommitTx(),
 	)
-
-	writeTx = table.SerializableReadWriteTxControl(
-		table.CommitTx(),
-	)
 )
 
 type Storage struct {
@@ -106,7 +102,7 @@ func (s *Storage) Read(ctx context.Context, entryID generator.RowID) (_ generato
 			}
 
 			var res result.Result
-			_, res, err = session.Execute(ctx, readTx, s.selectQuery,
+			_, res, err = session.Execute(table.WithTxControl(ctx, readTx), s.selectQuery,
 				table.NewQueryParameters(
 					table.ValueParam("$id", types.Uint64Value(entryID)),
 				),
@@ -168,7 +164,7 @@ func (s *Storage) Write(ctx context.Context, e generator.Row) (attempts int, _ e
 				return err
 			}
 
-			_, res, err := session.Execute(ctx, writeTx, s.upsertQuery,
+			_, res, err := session.Execute(ctx, s.upsertQuery,
 				table.NewQueryParameters(
 					table.ValueParam("$id", types.Uint64Value(e.ID)),
 					table.ValueParam("$payload_str", types.UTF8Value(*e.PayloadStr)),
